@@ -1,5 +1,3 @@
-
-
 AR Game Application
 
 Overview
@@ -18,7 +16,6 @@ Customizable Game Elements: Easily replace game assets with your own 3D models.
 
 User-Friendly Interface: Simple and intuitive UI for easy interaction.
 
-
 Technologies Used
 
 Android Studio: Development environment for building the app.
@@ -28,7 +25,6 @@ ARCore: Google's platform for building AR experiences on Android.
 Sceneform: Framework for rendering 3D models in AR.
 
 Java/Kotlin: Programming language used for building the app.
-
 
 Prerequisites
 
@@ -40,57 +36,38 @@ Basic knowledge of Java or Kotlin.
 
 ARCore SDK setup in Android Studio.
 
-
 Getting Started
 
-1. Clone the Repository
-
+Clone the Repository
 git clone https://github.com/your-username/your-repo-name.git
 
-2. Open the Project in Android Studio
-
+Open the Project in Android Studio
 Launch Android Studio.
 
 Select File > Open and navigate to the cloned repository folder.
 
 Wait for the Gradle sync to complete.
 
-
-3. Install ARCore
-
+Install ARCore
 Download the ARCore SDK from ARCore SDK.
 
 Add the ARCore dependencies in your build.gradle file:
 
+dependencies { implementation 'com.google.ar:core:1.38.0' implementation 'com.google.ar.sceneform:sceneform:1.16.0' }
 
-dependencies {
-    implementation 'com.google.ar:core:1.38.0'
-    implementation 'com.google.ar.sceneform:sceneform:1.16.0'
-}
-
-4. Configure ARCore in the Project
-
+Configure ARCore in the Project
 Add the following permission to the AndroidManifest.xml:
-
-
-<uses-permission android:name="android.permission.CAMERA"/>
-<uses-feature android:name="android.hardware.camera.ar" android:required="true"/>
 
 Add the ARCore dependency to the app/build.gradle:
 
+dependencies { implementation 'com.google.ar:core:1.38.0' }
 
-dependencies {
-    implementation 'com.google.ar:core:1.38.0'
-}
-
-5. Build and Run the App
-
+Build and Run the App
 Connect your ARCore-compatible Android device.
 
 Select Run > Run 'app' or click on the green play button in Android Studio.
 
 The app should start on your device, allowing you to explore the AR experience.
-
 
 How to Play
 
@@ -102,7 +79,6 @@ Tap on the screen to place 3D game objects in the real world.
 
 Interact with the objects by tapping or dragging them.
 
-
 Customizing the Game
 
 Adding 3D Models: Add new 3D models in the res/raw folder and reference them in your AR code.
@@ -110,7 +86,6 @@ Adding 3D Models: Add new 3D models in the res/raw folder and reference them in 
 Adjusting Game Mechanics: Modify the Java/Kotlin files under src/main/java to change game logic or interactions.
 
 UI Customization: Edit the XML layout files under res/layout to change the user interface.
-
 
 Troubleshooting
 
@@ -120,26 +95,19 @@ Your device is ARCore compatible.
 
 ARCore services are up to date on your Android device.
 
-
 For Gradle sync issues, make sure to use the latest versions of ARCore and Sceneform dependencies.
-
 
 Contributing
 
 We welcome contributions to enhance this AR game! To contribute:
 
-1. Fork the repository.
+Fork the repository.
 
+Create a new branch for your feature or bug fix.
 
-2. Create a new branch for your feature or bug fix.
+Commit your changes and push to your branch.
 
-
-3. Commit your changes and push to your branch.
-
-
-4. Submit a pull request with a detailed explanation of your changes.
-
-
+Submit a pull request with a detailed explanation of your changes.
 
 License
 
@@ -150,4 +118,3 @@ Acknowledgments
 Thanks to the ARCore and Sceneform communities for their extensive documentation.
 
 This app was inspired by the potential of AR technology to create immersive gaming experiences.
-
