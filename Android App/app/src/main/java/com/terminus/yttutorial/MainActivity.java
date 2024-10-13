@@ -1,227 +1,91 @@
 package com.terminus.yttutorial;
 
-import android.graphics.Point;
-import android.media.AudioAttributes;
-import android.media.SoundPool;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Display;
 import android.widget.Button;
-import android.widget.TextView;
 
-import com.google.ar.sceneform.Camera;
-import com.google.ar.sceneform.Node;
 import com.google.ar.sceneform.Scene;
-import com.google.ar.sceneform.collision.Ray;
 import com.google.ar.sceneform.math.Vector3;
-import com.google.ar.sceneform.rendering.MaterialFactory;
 import com.google.ar.sceneform.rendering.ModelRenderable;
-import com.google.ar.sceneform.rendering.ShapeFactory;
-import com.google.ar.sceneform.rendering.Texture;
-
-import java.util.Random;
+import com.google.ar.sceneform.ux.ArFragment;
+import com.google.ar.sceneform.ux.TransformableNode;
 
 public class MainActivity extends AppCompatActivity {
 
     private Scene scene;
-    private Camera camera;
-    private ModelRenderable bulletRenderable;
-    private boolean shouldStartTimer = true;
-    private int balloonsLeft = 20;
-    private Point point;
-    private TextView balloonsLeftTxt;
-    private SoundPool soundPool;
-    private int sound;
+    private ModelRenderable potatoRenderable, bowlRenderable;
+    private TransformableNode potatoNode, bowlNode;
+    private boolean potatoInBowl = false;
+    private ArFragment arFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        Display display = getWindowManager().getDefaultDisplay();
-        point = new Point();
-        display.getRealSize(point);
-
         setContentView(R.layout.activity_main);
 
-        loadSoundPool();
-
-        balloonsLeftTxt = findViewById(R.id.balloonsCntTxt);
-        CustomArFragment arFragment =
-                (CustomArFragment) getSupportFragmentManager().findFragmentById(R.id.arFragment);
-
-
+        // Initialize the AR Fragment
+        arFragment = (CustomArFragment) getSupportFragmentManager().findFragmentById(R.id.arFragment);
         scene = arFragment.getArSceneView().getScene();
-        camera = scene.getCamera();
 
-        addBalloonsToScene();
-        buildBulletModel();
+        Button tossButton = findViewById(R.id.tossButton);
 
+        // Load the 3D models
+        loadModels();
 
-        Button shoot = findViewById(R.id.shootButton);
-
-        shoot.setOnClickListener(v -> {
-
-            if (shouldStartTimer) {
-                startTimer();
-                shouldStartTimer = false;
+        tossButton.setOnClickListener(v -> {
+            if (!potatoInBowl) {
+                tossPotatoIntoBowl();
             }
-
-            shoot();
-
         });
-
-
     }
 
-    private void loadSoundPool() {
+    private void loadModels() {
+        // Load potato model
+        ModelRenderable.builder()
+                .setSource(this, Uri.parse("potato.glb"))
+                .build()
+                .thenAccept(renderable -> potatoRenderable = renderable);
 
-        AudioAttributes audioAttributes = new AudioAttributes.Builder()
-                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                .setUsage(AudioAttributes.USAGE_GAME)
-                .build();
-
-        soundPool = new SoundPool.Builder()
-                .setMaxStreams(1)
-                .setAudioAttributes(audioAttributes)
-                .build();
-
-        sound = soundPool.load(this, R.raw.blop_sound, 1);
-
+        // Load bowl model
+        ModelRenderable.builder()
+                .setSource(this, Uri.parse("bowl.glb"))
+                .build()
+                .thenAccept(renderable -> bowlRenderable = renderable)
+                .thenRun(this::addBowlToScene);  // Add bowl to the scene after it is loaded
     }
 
-    private void shoot() {
+    private void addBowlToScene() {
+        bowlNode = new TransformableNode(arFragment.getTransformationSystem());
+        bowlNode.setRenderable(bowlRenderable);
+        bowlNode.setWorldPosition(new Vector3(0, 0, -1)); // Position bowl 1 meter away from the camera
+        scene.addChild(bowlNode);
+    }
 
-        Ray ray = camera.screenPointToRay(point.x / 2f, point.y / 2f);
-        Node node = new Node();
-        node.setRenderable(bulletRenderable);
-        scene.addChild(node);
+    private void tossPotatoIntoBowl() {
+        potatoNode = new TransformableNode(arFragment.getTransformationSystem());
+        potatoNode.setRenderable(potatoRenderable);
+        potatoNode.setWorldPosition(new Vector3(0, 1, -1)); // Start potato above the bowl
+        scene.addChild(potatoNode);
 
+        // Animate potato falling into the bowl
         new Thread(() -> {
-
-            for (int i = 0;i < 200;i++) {
-
-                int finalI = i;
+            for (int i = 0; i < 100; i++) {
                 runOnUiThread(() -> {
+                    Vector3 currentPosition = potatoNode.getWorldPosition();
+                    potatoNode.setWorldPosition(new Vector3(currentPosition.x, currentPosition.y - 0.01f, currentPosition.z));
 
-                    Vector3 vector3 = ray.getPoint(finalI * 0.1f);
-                    node.setWorldPosition(vector3);
-
-                    Node nodeInContact = scene.overlapTest(node);
-
-                    if (nodeInContact != null) {
-
-                        balloonsLeft--;
-                        balloonsLeftTxt.setText("Balloons Left: " + balloonsLeft);
-                        scene.removeChild(nodeInContact);
-
-                        soundPool.play(sound, 1f, 1f, 1, 0
-                        , 1f);
-
+                    // Check if potato is inside the bowl (simple collision check based on position)
+                    if (currentPosition.y <= 0.2 && Math.abs(currentPosition.x) < 0.1 && Math.abs(currentPosition.z + 1) < 0.1) {
+                        potatoInBowl = true;
                     }
-
                 });
-
                 try {
-                    Thread.sleep(10);
+                    Thread.sleep(10); // Control speed of the animation
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-
             }
-
-            runOnUiThread(() -> scene.removeChild(node));
-
         }).start();
-
-    }
-
-    private void startTimer() {
-
-        TextView timer = findViewById(R.id.timerText);
-
-        new Thread(() -> {
-
-            int seconds = 0;
-
-            while (balloonsLeft > 0) {
-
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-                seconds++;
-
-                int minutesPassed = seconds / 60;
-                int secondsPassed = seconds % 60;
-
-                runOnUiThread(() -> timer.setText(minutesPassed + ":" + secondsPassed));
-
-            }
-
-        }).start();
-
-    }
-
-    private void buildBulletModel() {
-
-        Texture
-                .builder()
-                .setSource(this, R.drawable.texture)
-                .build()
-                .thenAccept(texture -> {
-
-
-                    MaterialFactory
-                            .makeOpaqueWithTexture(this, texture)
-                            .thenAccept(material -> {
-
-                                bulletRenderable = ShapeFactory
-                                        .makeSphere(0.01f,
-                                                new Vector3(0f, 0f, 0f),
-                                                material);
-
-                            });
-
-
-                });
-
-    }
-
-    private void addBalloonsToScene() {
-
-        ModelRenderable
-                .builder()
-                .setSource(this, Uri.parse("balloon.sfb"))
-                .build()
-                .thenAccept(renderable -> {
-
-                    for (int i = 0;i < 20;i++) {
-
-                        Node node = new Node();
-                        node.setRenderable(renderable);
-                        scene.addChild(node);
-
-
-                        Random random = new Random();
-                        int x = random.nextInt(10);
-                        int z = random.nextInt(10);
-                        int y = random.nextInt(20);
-
-                        z = -z;
-
-                        node.setWorldPosition(new Vector3(
-                                (float) x,
-                                y / 10f,
-                                (float) z
-                        ));
-
-
-                    }
-
-                });
-
     }
 }
