@@ -1,5 +1,3 @@
-
-
 AR Game Application
 
 Overview
