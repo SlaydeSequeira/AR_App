@@ -1,0 +1,29 @@
+[versions]
+agp = "8.6.1"
+cameraCore = "1.3.4"
+junit = "4.13.2"
+junitVersion = "1.2.1"
+espressoCore = "3.6.1"
+appcompat = "1.7.0"
+material = "1.12.0"
+activity = "1.9.2"
+constraintlayout = "2.1.4"
+sceneformUx = "1.17.1"
+
+[libraries]
+camera-camera2 = { module = "androidx.camera:camera-camera2", version.ref = "cameraCore" }
+camera-core = { module = "androidx.camera:camera-core", version.ref = "cameraCore" }
+camera-lifecycle = { module = "androidx.camera:camera-lifecycle", version.ref = "cameraCore" }
+camera-view = { module = "androidx.camera:camera-view", version.ref = "cameraCore" }
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
+espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
+constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+sceneform-ux = { module = "com.google.ar.sceneform.ux:sceneform-ux", version.ref = "sceneformUx" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+
