@@ -8,12 +8,25 @@
 <body>
     <h1>Welcome to the Home Page</h1>
     <p>This is the main landing page of the website.</p>
+    
+    <h2>Navigation</h2>
     <nav>
-        <a href="{% url 'about' %}">About Us</a>
-        <a href="{% url 'contact' %}">Contact</a>
-        <a href="{% url 'services' %}">Services</a>
-        <a href="{% url 'blog' %}">Blog</a>
-        <a href="{% url 'faq' %}">FAQ</a>
+        <ul>
+            <li><a href="{% url 'about' %}">About Us</a></li>
+            <li><a href="{% url 'contact' %}">Contact Us</a></li>
+            <li><a href="{% url 'services' %}">Services</a></li>
+            <li><a href="{% url 'blog' %}">Blog</a></li>
+            <li><a href="{% url 'faq' %}">FAQ</a></li>
+            <li><a href="{% url 'gallery' %}">Gallery</a></li>
+            <li><a href="{% url 'team' %}">Our Team</a></li>
+            <li><a href="{% url 'pricing' %}">Pricing</a></li>
+            <li><a href="{% url 'testimonials' %}">Testimonials</a></li>
+            <li><a href="{% url 'terms_of_service' %}">Terms of Service</a></li>
+        </ul>
     </nav>
+    
+    <footer>
+        <p>© 2024 Your Company. All rights reserved.</p>
+    </footer>
 </body>
 </html>
