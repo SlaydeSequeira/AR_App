@@ -2,5 +2,10 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Awsccproject" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/ComposeCookBook - Copy" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/FantomsAR-shopping-app" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/ccproj" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/virasat_web" vcs="Git" />
   </component>
 </project>
